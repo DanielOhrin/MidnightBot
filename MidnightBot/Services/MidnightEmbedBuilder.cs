@@ -16,6 +16,11 @@ namespace MidnightBot.Services
             _builder = new DiscordEmbedBuilder().WithAuthor("Midnight Sky", null, "https://cdn.discordapp.com/attachments/1056341873905635398/1085322008222519527/Midnight.jpg").WithColor(_color);
         }
 
+        public DiscordEmbed WithImageUrl(string url)
+        {
+            return _builder.WithImageUrl(url);
+        }
+
         public DiscordEmbed AddField(string name, string value, bool inline = false)
         {
             return _builder.AddField(name, value, inline);

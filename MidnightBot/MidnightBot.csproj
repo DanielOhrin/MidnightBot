@@ -18,6 +18,11 @@
 
   <ItemGroup>
     <Folder Include="Attributes\" />
+    <Folder Include="AutocompleteProviders\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\MidnightBot.Data\MidnightBot.Data.csproj" />
+	</ItemGroup>
+	
 </Project>
