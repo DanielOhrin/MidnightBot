@@ -42,5 +42,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<PlayerWithEconomy>(stream);
             }
         }
+
+        public static async Task<TopTenPlayerWithEconomy?> GetTop(string economyType)
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/economy/top?economy={economyType}&key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<TopTenPlayerWithEconomy>(stream);
+            }
+        }
     }
 }

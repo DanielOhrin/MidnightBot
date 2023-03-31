@@ -1,7 +1,10 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
+using MidnightBot.AutocompleteProviders;
 using MidnightBot.Data.API;
 using MidnightBot.Data.Models;
 using MidnightBot.Services;
@@ -38,6 +41,7 @@ namespace MidnightBot.SlashCommands
                     embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
                     embed.AddField("Balance", "$" + BotUtils.FormatNumber(playerWithBal.Balance));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position}");
+                    embed.WithFooter("Server: play.midnightsky.net");
                 }
                 else
                 {
@@ -79,6 +83,7 @@ namespace MidnightBot.SlashCommands
                     embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
                     embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position}");
+                    embed.WithFooter("Server: play.midnightsky.net");
                 }
                 else
                 {
@@ -137,11 +142,81 @@ namespace MidnightBot.SlashCommands
                         embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", "N/A");
                     }
                 }
+                embed.WithFooter("Server: play.midnightsky.net");
             }
             else
             {
                 embed.WithTitle("**Error**").WithDescription($"Player **{playerName}** was not found.").WithColor(DiscordColor.DarkRed);
             }
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+        }
+
+        [SlashCommand("top", "Shows the top 10 players in the specified category")]
+        public async Task TopCommand(InteractionContext ctx, [Option("category", "The leaderboard category to display", true)][Autocomplete(typeof(TopAutocompleteProvider))] string category)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+
+            switch (category.ToLower())
+            {
+                case "ap":
+                    category = "AP";
+                    break;
+                case "balance":
+                    category = "MONEY";
+                    break;
+                case "fairy":
+                    category = "FAIRY_POINTS";
+                    break;
+                case "fishing":
+                    category = "FISHING_POINTS";
+                    break;
+                case "dwarf":
+                    category = "DWARF_POINTS";
+                    break;
+                default:
+                    embed = new DiscordEmbedBuilder().WithTitle("**Error**").WithDescription("Invalid category given.").WithColor(DiscordColor.DarkRed);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                    return;
+            }
+
+            List<PlayerWithEconomy>? players = null;
+            
+            try
+            {
+                players = (await MidnightAPI.GetTop(category))?.Players;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+            }
+
+            if (category.Contains("_"))
+            {
+                embed.WithTitle($"{(category[..1] + category[1..].ToLower()).Replace("_", " ")} Leaderboard");
+            }
+            else
+            {
+                embed.WithTitle($"{(category == "AP" ? "AP" : category[..1] + category[1..].ToLower())} Leaderboard");
+            }
+            
+            if (players == null)
+            {
+                embed.WithTitle("**Error**").WithDescription("There are no players in this leaderboard yet.").WithColor(DiscordColor.DarkRed);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                return;
+            }
+
+            StringBuilder sb = new();
+
+            for(int i = 0; i < 10; i++)
+            {
+                sb.AppendLine($"**{i + 1}. {players[i].Name}** » {(category == "MONEY" ? "$" : null)}{BotUtils.FormatNumber(category == "MONEY" ? players[i].Balance : players[i].Balance.Substring(0, players[i].Balance.IndexOf(".")))}");
+            }
+
+            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
