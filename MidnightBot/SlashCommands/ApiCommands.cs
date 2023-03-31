@@ -41,6 +41,7 @@ namespace MidnightBot.SlashCommands
                     embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
                     embed.AddField("Balance", "$" + BotUtils.FormatNumber(playerWithBal.Balance));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position}");
+                    embed.WithFooter("Server: play.midnightsky.net");
                 }
                 else
                 {
@@ -82,6 +83,7 @@ namespace MidnightBot.SlashCommands
                     embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
                     embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position}");
+                    embed.WithFooter("Server: play.midnightsky.net");
                 }
                 else
                 {
@@ -140,6 +142,7 @@ namespace MidnightBot.SlashCommands
                         embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", "N/A");
                     }
                 }
+                embed.WithFooter("Server: play.midnightsky.net");
             }
             else
             {
@@ -161,7 +164,7 @@ namespace MidnightBot.SlashCommands
                 case "ap":
                     category = "AP";
                     break;
-                case "bal":
+                case "balance":
                     category = "MONEY";
                     break;
                 case "fairy":

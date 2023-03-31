@@ -9,7 +9,7 @@ namespace MidnightBot.AutocompleteProviders
         {
             return new List<DiscordAutoCompleteChoice>
             {
-                new DiscordAutoCompleteChoice("bal", "bal"),
+                new DiscordAutoCompleteChoice("balance", "balance"),
                 new DiscordAutoCompleteChoice("ap", "ap"),
                 new DiscordAutoCompleteChoice("fairy", "fairy"),
                 new DiscordAutoCompleteChoice("fishing", "fishing"),
