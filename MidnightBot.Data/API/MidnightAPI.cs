@@ -62,5 +62,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<Alliance>(stream);
             }
         }
+
+        public static async Task<Island?> GetIsland(string islandId)
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/hourlyxp/single?island_id={islandId}&key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<Island>(stream);
+            }
+        }
     }
 }
