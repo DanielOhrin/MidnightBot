@@ -295,7 +295,7 @@ namespace MidnightBot.SlashCommands
 
                 Alliance? alliance = await MidnightAPI.GetAlliance("player", player.Name);
 
-                if (alliance != null)
+                if (alliance?.Id != null)
                 {
                     embed.AddField("Alliance", $"{alliance.Name} ({alliance.Members.First(x => x.Name == player.Name).Role})");
                 }
@@ -303,7 +303,6 @@ namespace MidnightBot.SlashCommands
                 {
                     embed.AddField("Alliance", "N/A");
                 }
-
 
                 embed.WithFooter("Server: play.midnightsky.net");
             }
