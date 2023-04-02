@@ -72,5 +72,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<Island>(stream);
             }
         }
+        
+        public static async Task<TopIslands?> GetTopIslands(long amount)
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/hourlyxp/top?top={amount}&key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<TopIslands>(stream);
+            }
+        }
     }
 }
