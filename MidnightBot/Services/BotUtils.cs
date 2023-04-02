@@ -1,4 +1,6 @@
-﻿namespace MidnightBot.Services
+﻿using System.Text;
+
+namespace MidnightBot.Services
 {
     public static class BotUtils
     {
@@ -28,33 +30,35 @@
             int decimals = (int.Parse(numberOne.Substring(numberOne.IndexOf(".") + 1)) + int.Parse(numberTwo.Substring(numberTwo.IndexOf(".") + 1))) % 100;
             int carry = decimals / 100;
 
-            numberOne.Reverse();
-            numberTwo.Reverse();
+            numberOne = numberOne.Substring(0, numberOne.IndexOf("."));
+            numberTwo = numberTwo.Substring(0, numberTwo.IndexOf("."));
+            numberOne = string.Join("", numberOne.Reverse());
+            numberTwo = string.Join("", numberTwo.Reverse());
 
             string result = string.Empty;
 
             int i = 0;
 
-            while (i < Math.Max(numberOne.Length, numberTwo.Length) - 1)
+            while (i < Math.Max(numberOne.Length, numberTwo.Length))
             {
                 int tempSum = carry;
 
                 if (i < numberOne.Length)
                 {
-                    tempSum += Convert.ToInt32(numberOne[i]);
+                    tempSum += int.Parse(numberOne[i].ToString());
                 }
 
                 if (i < numberTwo.Length)
                 {
-                    tempSum += Convert.ToInt32(numberTwo[i]);
+                    tempSum += int.Parse(numberTwo[i].ToString());
                 }
 
                 carry = tempSum / 10;
-                result.Insert(0, (tempSum % 10).ToString());
+                result = result.Insert(0, (tempSum % 10).ToString());
                 i++;
             }
-
-            return result + decimals;
+            
+            return (carry > 0 ? result.Insert(0, carry.ToString()) : result) + "." + decimals;
         }
     }
 }

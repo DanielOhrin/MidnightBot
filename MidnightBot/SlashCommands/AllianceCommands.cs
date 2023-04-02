@@ -8,6 +8,7 @@ using DSharpPlus.SlashCommands;
 using MidnightBot.AutocompleteProviders;
 using MidnightBot.Data.API;
 using MidnightBot.Data.Models;
+using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
 {
@@ -36,8 +37,8 @@ namespace MidnightBot.SlashCommands
             }
 
             embed.WithTitle(alliance.Name);
-            
-            StringBuilder sb = new($"**Leader »** {alliance.Members.First(x => x.Role.ToUpper() == "LEADER" ).Name}");
+
+            StringBuilder sb = new($"**Leader »** {alliance.Members.First(x => x.Role.ToUpper() == "LEADER").Name}");
 
             List<string> admins = alliance.Members.Where(x => x.Role.ToUpper() == "ADMIN").OrderBy(x => x.Name).Select(x => x.Name).ToList();
             List<string> officers = alliance.Members.Where(x => x.Role.ToUpper() == "OFFICER").OrderBy(x => x.Name).Select(x => x.Name).ToList();
@@ -92,7 +93,7 @@ namespace MidnightBot.SlashCommands
             }
 
 
-            embed.WithDescription(sb.ToString());
+            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
@@ -106,7 +107,59 @@ namespace MidnightBot.SlashCommands
         [SlashCommand("bal", "Returns a list of the alliance's members, their rankings, and the alliance's total balance.")]
         public async Task AllianceBalCommand(InteractionContext ctx, [Option("name", "Name of a player or alliance.")] string searchValue)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
+            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+
+            Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
+
+            if (alliance?.Id == null)
+            {
+                alliance = await MidnightAPI.GetAlliance("alliance", searchValue);
+            }
+
+            if (alliance?.Id == null)
+            {
+                embed.WithTitle("**Error**").WithDescription("There is no player or alliance that matches that name.").WithColor(DiscordColor.DarkRed);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                return;
+            }
+
+            embed.WithTitle(alliance.Name);
+
+            List<PlayerWithEconomy?> players = new();
+
+            foreach (PlayerWithAlliance player in alliance.Members)
+            {
+                players.Add(await MidnightAPI.GetBalance(player.Id, "MONEY"));
+            }
+
+            if (players.Contains(null))
+            {
+                embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                return;
+            }
+
+            string sum = "0.00";
+            foreach (PlayerWithEconomy player in players)
+            {
+                sum = BotUtils.AddNumbers(sum, player.Balance);
+            }
+
+            StringBuilder sb = new("**Total Balance »** $" + BotUtils.FormatNumber(sum));
+
+            sb.AppendLine();
+            sb.AppendLine();
+
+            players = players.OrderBy(x => x.Position).ToList();
+            for (int i = 0; i < players.Count; i++)
+            {
+                sb.AppendLine($"**{i + 1}. {players[i].Name} »** ${BotUtils.FormatNumber(players[i].Balance)} (#{players[i].Position})");
+            }
+
+            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
         [SlashCommand("ap", "Returns a list of the alliance's members, their rankings, and the alliance's total ap.")]
