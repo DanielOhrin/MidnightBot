@@ -56,7 +56,7 @@ namespace MidnightBot.SlashCommands
         }
 
         [SlashCommand("xptop", "Returns the top islands and their xp gain in the current hour.")]
-        public async Task IslandHourlyTopCommand(InteractionContext ctx, [Maximum(50)][Option("amount", "Amount of islands you want to see.")] long amount)
+        public async Task IslandHourlyTopCommand(InteractionContext ctx, [Minimum(1)][Maximum(50)][Option("amount", "Amount of islands you want to see.")] long amount)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
