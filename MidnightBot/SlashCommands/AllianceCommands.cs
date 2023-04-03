@@ -131,7 +131,15 @@ namespace MidnightBot.SlashCommands
 
             foreach (PlayerWithAlliance player in alliance.Members)
             {
-                players.Add(await MidnightAPI.GetBalance(player.Id, "MONEY"));
+                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalance(player.Id, "MONEY");
+                if (newPlayer.Position != (-1))
+                {
+                    players.Add(newPlayer);
+                }
+                else
+                {
+                    players.Add(new PlayerWithEconomy(newPlayer.Id, newPlayer.Name, 99999, newPlayer.Balance));
+                }
             }
 
             if (players.Contains(null))
@@ -155,7 +163,7 @@ namespace MidnightBot.SlashCommands
             players = players.OrderBy(x => x.Position).ToList();
             for (int i = 0; i < players.Count; i++)
             {
-                sb.AppendLine($"**{i + 1}. {players[i].Name} »** ${BotUtils.FormatNumber(players[i].Balance)} (#{players[i].Position + 1})");
+                sb.AppendLine($"**{i + 1}. {players[i].Name} »** ${BotUtils.FormatNumber(players[i].Balance)} {(players[i].Position != 99999 ? $"(#{players[i].Position + 1})" : "")}");
             }
 
             embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
@@ -189,7 +197,15 @@ namespace MidnightBot.SlashCommands
 
             foreach (PlayerWithAlliance player in alliance.Members)
             {
-                players.Add(await MidnightAPI.GetBalance(player.Id, "AP"));
+                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalance(player.Id, "AP");
+                if (newPlayer.Position != (-1))
+                {
+                    players.Add(newPlayer);
+                }
+                else
+                {
+                    players.Add(new PlayerWithEconomy(newPlayer.Id, newPlayer.Name, 99999, newPlayer.Balance));
+                }
             }
 
             if (players.Contains(null))
@@ -202,7 +218,10 @@ namespace MidnightBot.SlashCommands
             string sum = "0.00";
             foreach (PlayerWithEconomy player in players)
             {
-                sum = BotUtils.AddNumbers(sum, player.Balance);
+                if (player.Balance != "0.00")
+                {
+                    sum = BotUtils.AddNumbers(sum, player.Balance);
+                }
             }
 
             sum = BotUtils.FormatNumber(sum);
@@ -215,7 +234,7 @@ namespace MidnightBot.SlashCommands
             for (int i = 0; i < players.Count; i++)
             {
                 string balance = BotUtils.FormatNumber(players[i].Balance);
-                sb.AppendLine($"**{i + 1}. {players[i].Name} »** {balance.Substring(0, balance.IndexOf("."))} (#{players[i].Position + 1})");
+                sb.AppendLine($"**{i + 1}. {players[i].Name} »** {balance.Substring(0, balance.IndexOf("."))} {(players[i].Position != 99999 ? $"(#{players[i].Position + 1})" : "")}");
             }
 
             embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
