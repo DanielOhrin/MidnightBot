@@ -10,7 +10,7 @@ namespace MidnightBot.SlashCommands
 {
     public class MiscCommands : ApplicationCommandModule
     {
-        [SlashCommand("daily", "Returns the amount of time until all daily resets.")]
+        [SlashCommand("daily", "Returns the amount of time until the next occurance of each daily reset.")]
         public static async Task QuotasCommand(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -80,7 +80,7 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("help", "Helps you start using the bot.")]
+        [SlashCommand("help", "Returns information that helps you start using the bot.")]
         public async Task HelpCommand(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

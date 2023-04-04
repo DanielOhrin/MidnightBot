@@ -98,7 +98,7 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("realmpoints", "Similar to /ap and /bal, this returns the player's points and position in each realm.")]
+        [SlashCommand("realmpoints", "Returns the player's current points in each realm.")]
         public async Task RealmPointsCommand(InteractionContext ctx, [Option("player", "IGN of the player's realm points you want to see.")] string playerName)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -151,7 +151,7 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("profile", "Shows all available information on the specified player.")]
+        [SlashCommand("profile", "Returns all available information on the specified player.")]
         public async Task ProfileCommand(InteractionContext ctx, [Option("player", "IGN of the player's stats you want to see.")] string playerName)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -230,7 +230,7 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("top", "Shows the top 10 players in the specified category")]
+        [SlashCommand("top", "Returns the top 10 players in the specified category")]
         public async Task TopCommand(InteractionContext ctx, [Option("category", "The leaderboard category to display", true)][Autocomplete(typeof(TopAutocompleteProvider))] string category)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
