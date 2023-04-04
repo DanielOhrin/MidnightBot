@@ -20,30 +20,25 @@ namespace MidnightBot.SlashCommands
 
             if (!Enum.GetNames(typeof(AdventureNamesEnum)).Any(x => x.Equals(adventure, StringComparison.CurrentCultureIgnoreCase)))
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Invalid adventure type."));
+                embed.Error("Invalid adventure type.");
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
 
             if (!Enum.GetNames(typeof(BossTypesEnum)).Any(x => x.Equals(type, StringComparison.CurrentCultureIgnoreCase)))
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Invalid boss type."));
+                embed.Error("Invalid boss type.");
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
 
             //! Format the arguments to look nice for the embed's title
             adventure = adventure[..1].ToUpper() + adventure[1..].ToLower();
             type = type[..1].ToUpper() + type[1..].ToLower() + "es";
-            embed.Title = $"{adventure} Adventure {type}";
+            embed.WithTitle($"{adventure} Adventure {type}");
             
-            try
-            {
-                AdventureBossFields.Add(embed, adventure, type);
-            }
-            catch (Exception e)
-            {
-                embed.Description = e.Message + "\n" + e.Source + "\n" + e.StackTrace + "\n" + e.InnerException;
-            }
             //! Add the fields 
+            AdventureBossFields.Add(embed, adventure, type);
 
             //! Edit the "thinking..." message
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));

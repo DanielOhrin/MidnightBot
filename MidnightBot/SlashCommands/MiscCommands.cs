@@ -4,6 +4,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
+using MidnightBot.Services;
+
 namespace MidnightBot.SlashCommands
 {
     public class MiscCommands : ApplicationCommandModule
@@ -13,7 +15,8 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithTitle("Roadmap").WithColor(DiscordColor.Purple).WithFooter("Server: midnightsky.net");
+            MidnightEmbedBuilder embed = new MidnightEmbedBuilder();
+            embed.WithTitle("Roadmap");
 
             StringBuilder sb = new();
 
@@ -38,7 +41,8 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithTitle("Help").WithColor(DiscordColor.Purple).WithFooter("Server: midnightsky.net");
+            MidnightEmbedBuilder embed = new();
+            embed.WithTitle("Help");
 
             StringBuilder sb = new();
             sb.AppendLine();

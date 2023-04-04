@@ -20,7 +20,7 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
 
@@ -31,7 +31,7 @@ namespace MidnightBot.SlashCommands
 
             if (alliance?.Id == null)
             {
-                embed.WithTitle("**Error**").WithDescription("There is no player or alliance that matches that name.").WithColor(DiscordColor.DarkRed);
+                embed.Error("There is no player or alliance that matches that name.");
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -79,10 +79,9 @@ namespace MidnightBot.SlashCommands
 
                     sb.Append(string.Join(",  ", enemies.Order()));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    await Console.Out.WriteLineAsync(ex.Message + "\n" + ex.StackTrace);
-                    embed.WithTitle("**UNKNOWN ERROR**").WithDescription("An unknown error occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                    embed.UnknownError();
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                     return;
                 }
@@ -93,7 +92,7 @@ namespace MidnightBot.SlashCommands
             }
 
 
-            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
+            embed.WithDescription(sb.ToString());
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
@@ -109,7 +108,7 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
 
@@ -120,7 +119,7 @@ namespace MidnightBot.SlashCommands
 
             if (alliance?.Id == null)
             {
-                embed.WithTitle("**Error**").WithDescription("There is no player or alliance that matches that name.").WithColor(DiscordColor.DarkRed);
+                embed.Error("There is no player or alliance that matches that name.");
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -144,7 +143,7 @@ namespace MidnightBot.SlashCommands
 
             if (players.Contains(null))
             {
-                embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                embed.UnknownError();
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -166,7 +165,7 @@ namespace MidnightBot.SlashCommands
                 sb.AppendLine($"**{i + 1}. {players[i].Name} »** ${BotUtils.FormatNumber(players[i].Balance)} {(players[i].Position != 99999 ? $"(#{players[i].Position + 1})" : "")}");
             }
 
-            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
+            embed.WithDescription(sb.ToString());
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
@@ -175,7 +174,7 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
 
@@ -186,7 +185,7 @@ namespace MidnightBot.SlashCommands
 
             if (alliance?.Id == null)
             {
-                embed.WithTitle("**Error**").WithDescription("There is no player or alliance that matches that name.").WithColor(DiscordColor.DarkRed);
+                embed.Error("There is no player or alliance that matches that name.");
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -210,7 +209,7 @@ namespace MidnightBot.SlashCommands
 
             if (players.Contains(null))
             {
-                embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                embed.UnknownError();
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -237,7 +236,7 @@ namespace MidnightBot.SlashCommands
                 sb.AppendLine($"**{i + 1}. {players[i].Name} »** {balance.Substring(0, balance.IndexOf("."))} {(players[i].Position != 99999 ? $"(#{players[i].Position + 1})" : "")}");
             }
 
-            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
+            embed.WithDescription(sb.ToString());
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
@@ -246,7 +245,7 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
 
@@ -257,7 +256,7 @@ namespace MidnightBot.SlashCommands
 
             if (alliance?.Id == null)
             {
-                embed.WithTitle("**Error**").WithDescription("There is no player or alliance that matches that name.").WithColor(DiscordColor.DarkRed);
+                embed.Error("There is no player or alliance that matches that name.");
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -288,7 +287,7 @@ namespace MidnightBot.SlashCommands
 
             if (players.Contains(null))
             {
-                embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                embed.UnknownError();
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
@@ -315,7 +314,7 @@ namespace MidnightBot.SlashCommands
                 sb.AppendLine($"**{i + 1}. {players[i].Name} »** {(balance != "N/A" ? balance.Substring(0, balance.IndexOf(".")) : balance)} {(players[i].Position != 100000 && players[i].Position != 99999 ? $"(#{players[i].Position + 1})" : "")}");
             }
 
-            embed.WithDescription(sb.ToString()).WithFooter("Server: midnightsky.net");
+            embed.WithDescription(sb.ToString());
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
     }

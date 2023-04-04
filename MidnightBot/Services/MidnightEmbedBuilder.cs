@@ -6,41 +6,37 @@ namespace MidnightBot.Services
     public class MidnightEmbedBuilder
     {
         private readonly DiscordEmbedBuilder _builder;
-        private readonly DiscordColor _color = DiscordColor.Purple;
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
-
-        public IReadOnlyList<DiscordEmbedField> Fields => _builder.Fields;
+        private readonly DiscordColor _defaultColor = DiscordColor.Purple;
         public MidnightEmbedBuilder()
         {
-            _builder = new DiscordEmbedBuilder().WithAuthor("Midnight Sky", null, "https://cdn.discordapp.com/attachments/1056341873905635398/1085322008222519527/Midnight.jpg").WithColor(_color);
+            _builder = new DiscordEmbedBuilder().WithColor(_defaultColor).WithFooter("Server: midnightsky.net");
         }
 
-        public DiscordEmbed WithImageUrl(string url)
+        public DiscordEmbedBuilder WithImageUrl(string url)
         {
             return _builder.WithImageUrl(url);
         }
 
-        public DiscordEmbed AddField(string name, string value, bool inline = false)
+        public DiscordEmbedBuilder AddField(string name, string value, bool inline = false)
         {
             return _builder.AddField(name, value, inline);
         }
 
-        public DiscordEmbed ClearFields()
+        public DiscordEmbedBuilder ClearFields()
         {
             return _builder.ClearFields();
         }
-        public DiscordEmbed WithFooter(string? text = null, string? iconUrl = null)
+        public DiscordEmbedBuilder WithFooter(string? text = null, string? iconUrl = null)
         {
             return _builder.WithFooter(text, iconUrl);
         }
 
-        public DiscordEmbed WithTitle(string title)
+        public DiscordEmbedBuilder WithTitle(string title)
         {
             return _builder.WithTitle(title);
         }
 
-        public DiscordEmbed WithDescription(string description)
+        public DiscordEmbedBuilder WithDescription(string description)
         {
             return _builder.WithDescription(description);
         }
@@ -49,17 +45,17 @@ namespace MidnightBot.Services
         {
             DiscordEmbedBuilder builder = _builder;
 
-            if (Title != null)
-            {
-                builder = builder.WithTitle(Title);
-            }
-
-            if (Description != null)
-            {
-                builder = builder.WithDescription(Description);
-            }
-
             return builder.Build();
+        }
+
+        public DiscordEmbedBuilder Error(string errorMessage)
+        {
+            return _builder.ClearFields().WithImageUrl("").WithTitle("**Error**").WithDescription(errorMessage).WithColor(DiscordColor.DarkRed);
+        }
+
+        public DiscordEmbedBuilder UnknownError()
+        {
+            return _builder.ClearFields().WithImageUrl("").WithTitle("**AN ERROR OCCURED**").WithDescription("**An unknown error occured. Please contact a developer.");
         }
     }
 }
