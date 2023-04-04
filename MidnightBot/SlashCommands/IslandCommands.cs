@@ -28,7 +28,7 @@ namespace MidnightBot.SlashCommands
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             if (player != null)
             {
@@ -40,16 +40,15 @@ namespace MidnightBot.SlashCommands
                     embed.WithTitle($"{player.Name}'s Island").WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
                     embed.AddField($"Xp Gained", BotUtils.FormatNumber(island.Amount.ToString()));
                     embed.AddField($"Time", $"{DateTime.Now.Minute}m {DateTime.Now.Second}s");
-                    embed.WithFooter("Server: play.midnightsky.net");
                 }
                 else
                 {
-                    embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error has occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                    embed.UnknownError();
                 }
             }
             else
             {
-                embed.WithTitle("**Error**").WithDescription($"Player **{playerName}** was not found.").WithColor(DiscordColor.DarkRed);
+                embed.Error($"Player **{playerName}** was not found.");
             }
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
@@ -62,7 +61,7 @@ namespace MidnightBot.SlashCommands
 
             List<Island>? islands = (await MidnightAPI.GetTopIslands(amount))?.Islands;
 
-            DiscordEmbedBuilder embed = new DiscordEmbedBuilder().WithColor(DiscordColor.Purple);
+            MidnightEmbedBuilder embed = new();
 
             if (islands != null && islands.Count == amount)
             {
@@ -80,18 +79,17 @@ namespace MidnightBot.SlashCommands
                         Island island = islands[i];
 
                         sb.AppendLine($"**{i + 1}. {island.Name} »** {BotUtils.FormatNumber(island.Amount.ToString())}");
-                        embed.WithFooter("Server: play.midnightsky.net");
                     }
                     embed.WithDescription(sb.ToString());
                 }
                 catch (Exception)
                 {
-                    embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error has occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                    embed.UnknownError();
                 }
             }
             else
             {
-                embed.WithTitle("**AN ERROR OCCURED**").WithDescription("An unknown error has occured. Please contact a developer.").WithColor(DiscordColor.DarkRed);
+                embed.UnknownError();
             }
 
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
