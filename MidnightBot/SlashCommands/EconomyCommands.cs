@@ -214,12 +214,6 @@ namespace MidnightBot.SlashCommands
                 {
                     embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", "N/A");
                 }
-                catch (Exception)
-                {
-                    embed.UnknownError();
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
-                    return;
-                }
             }
 
             Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, player.Name);
