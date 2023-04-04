@@ -1,6 +1,6 @@
 ﻿namespace MidnightBot.Enums
 {
-    enum AdventureNamesEnum
+    public enum AdventureNamesEnum
     {
         bandit,
         wasteland,

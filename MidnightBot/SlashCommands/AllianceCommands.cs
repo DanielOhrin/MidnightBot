@@ -8,6 +8,7 @@ using DSharpPlus.SlashCommands;
 using MidnightBot.AutocompleteProviders;
 using MidnightBot.Data.API;
 using MidnightBot.Data.Models;
+using MidnightBot.Enums;
 using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
@@ -22,11 +23,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
+            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance("alliance", searchValue);
+                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -69,7 +70,7 @@ namespace MidnightBot.SlashCommands
                 {
                     foreach (KeyValuePair<string, string> enemy in alliance.Relations)
                     {
-                        enemies.Add((await MidnightAPI.GetAlliance("alliance_id", enemy.Key))?.Name);
+                        enemies.Add((await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceId, enemy.Key))?.Name);
                     }
 
                     if (enemies.Contains(null))
@@ -110,11 +111,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
+            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance("alliance", searchValue);
+                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -176,11 +177,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
+            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance("alliance", searchValue);
+                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -247,11 +248,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance("player", searchValue);
+            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance("alliance", searchValue);
+                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)

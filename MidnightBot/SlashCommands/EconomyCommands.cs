@@ -7,6 +7,7 @@ using DSharpPlus.SlashCommands;
 using MidnightBot.AutocompleteProviders;
 using MidnightBot.Data.API;
 using MidnightBot.Data.Models;
+using MidnightBot.Enums;
 using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
@@ -220,7 +221,7 @@ namespace MidnightBot.SlashCommands
                     }
                 }
 
-                Alliance? alliance = await MidnightAPI.GetAlliance("player", player.Name);
+                Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, player.Name);
 
                 if (alliance?.Id != null)
                 {
