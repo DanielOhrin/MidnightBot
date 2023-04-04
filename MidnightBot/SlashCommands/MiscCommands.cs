@@ -10,6 +10,50 @@ namespace MidnightBot.SlashCommands
 {
     public class MiscCommands : ApplicationCommandModule
     {
+        [SlashCommand("daily", "Returns the amount of time until all daily resets.")]
+        public static async Task QuotasCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            DateTime currentDate = DateTime.Now;
+            MidnightEmbedBuilder embed = new();
+
+            //! Farming quotas
+            TimeSpan timeUntilQuotaResets;
+
+            if (currentDate.TimeOfDay.Hours > 12 && currentDate.TimeOfDay.Seconds > 0)
+            {
+                timeUntilQuotaResets = DateTime.Today.AddDays(1).AddHours(13) - currentDate;
+            }
+            else
+            {
+                timeUntilQuotaResets = DateTime.Today.AddHours(13) - currentDate;
+            }
+
+            embed.AddField("**Farming Quotas**", timeUntilQuotaResets.ToString(@"hh'h 'mm'm 'ss's'"));
+
+            //! Realms
+            TimeSpan timeUntilRealmsReset;
+
+            if (currentDate.TimeOfDay.Hours > 13 && currentDate.TimeOfDay.Seconds > 0)
+            {
+                timeUntilRealmsReset = DateTime.Today.AddDays(1).AddHours(14) - currentDate;
+            }
+            else
+            {
+                timeUntilRealmsReset = DateTime.Today.AddHours(14) - currentDate;
+            }
+
+            embed.AddField("**Realms**", timeUntilRealmsReset.ToString(@"hh'h 'mm'm 'ss's'"));
+
+            //! Levelcap
+            TimeSpan timeUntilLevelcapResets = DateTime.Today.AddDays(1) - currentDate;
+            embed.AddField("**Levelcap **", timeUntilLevelcapResets.ToString(@"hh'h 'mm'm 'ss's'"));
+
+            embed.WithTitle("Daily Reset");
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+        }
+
         [SlashCommand("roadmap", "Returns a list of upcoming features.")]
         public async Task RoadmapCommand(InteractionContext ctx)
         {
