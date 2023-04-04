@@ -12,7 +12,7 @@ namespace MidnightBot.SlashCommands
     [SlashCommandGroup("is", "Group of island commands")]
     public class IslandCommands : ApplicationCommandModule
     {
-        [SlashCommand("xp", "Returns the amount of xp that the specified player's island has grinded so far in the current hour.")]
+        [SlashCommand("xp", "Returns the amount of xp that the specified player's island has grinded in the current hour.")]
         public async Task IslandHourlyCommand(InteractionContext ctx, [Option("name", "IGN of the player who's island xp you would like to see.")] string playerName)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

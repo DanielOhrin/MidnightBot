@@ -10,7 +10,7 @@ namespace MidnightBot.SlashCommands
 {
     public class BossCommands : ApplicationCommandModule
     {
-        [SlashCommand("bosslist", "Returns a list of bosses for the specified adventure")]
+        [SlashCommand("bosslist", "Returns a list of mini/bosses for the specified adventure")]
         public static async Task BossListCommand(InteractionContext ctx, [Option("adventure", "Which adventure?", true)][Autocomplete(typeof(AdventureAutocompleteProvider))] string adventure, [Option("type", "What type of boss?", true)][Autocomplete(typeof(BossTypeAutocompleteProvider))] string bossType)
         {
             //! Create a deferred response (thinking...)

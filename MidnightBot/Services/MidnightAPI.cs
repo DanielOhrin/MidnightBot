@@ -59,7 +59,7 @@ namespace MidnightBot.Data.API
         {
             using (var client = new MidnightClient().Client)
             {
-                await using Stream stream = await client.GetStreamAsync($"{_url}/alliance?{searchType.GetDescription}={searchValue}&key={_apiKey}");
+                await using Stream stream = await client.GetStreamAsync($"{_url}/alliance?{searchType.GetDescription()}={searchValue}&key={_apiKey}");
 
                 return await JsonSerializer.DeserializeAsync<Alliance>(stream);
             }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq.Expressions;
+using System.Text;
 
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -97,7 +98,7 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("realmpoints", "Similar to /ap and /bal, this returns the player's points and position in each realm.")]
+        [SlashCommand("realmpoints", "Returns the player's current points in each realm.")]
         public async Task RealmPointsCommand(InteractionContext ctx, [Option("player", "IGN of the player's realm points you want to see.")] string playerName)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -150,99 +151,86 @@ namespace MidnightBot.SlashCommands
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("profile", "Shows all available information on the specified player.")]
+        [SlashCommand("profile", "Returns all available information on the specified player.")]
         public async Task ProfileCommand(InteractionContext ctx, [Option("player", "IGN of the player's stats you want to see.")] string playerName)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
+            MidnightEmbedBuilder embed = new();
             Player? player = null;
 
             try
             {
                 player = await MidnightAPI.GetPlayer(playerName);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            }
-
-            MidnightEmbedBuilder embed = new();
-
-            if (player != null)
-            {
-                PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalance(player.Id, "MONEY");
-
-                if (playerWithBal != null)
-                {
-                    embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
-                    embed.AddField("Balance", "$" + $"{BotUtils.FormatNumber(playerWithBal.Balance)} (#{playerWithBal.Position + 1})");
-                }
-                else
-                {
-                    embed.UnknownError();
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
-                    return;
-                }
-
-                playerWithBal = await MidnightAPI.GetBalance(player.Id, "AP");
-
-                if (playerWithBal != null)
-                {
-                    embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))) + $" (#{playerWithBal.Position + 1})");
-                }
-                else
-                {
-                    embed.UnknownError();
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
-                    return;
-                }
-
-                List<string> pointTypes = new() { "DWARF", "FISHING", "FAIRY" };
-                foreach (string pointType in pointTypes)
-                {
-                    try
-                    {
-                        playerWithBal = await MidnightAPI.GetBalance(player.Id, pointType + "_POINTS");
-
-                        if (playerWithBal != null)
-                        {
-                            embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))) + $" (#{playerWithBal.Position + 1})");
-                        }
-                        else
-                        {
-                            embed.UnknownError();
-                            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
-                            return;
-                        }
-                    }
-                    catch (HttpRequestException)
-                    {
-                        embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", "N/A");
-                    }
-                }
-
-                Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, player.Name);
-
-                if (alliance?.Id != null)
-                {
-                    embed.AddField("Alliance", $"{alliance.Name} ({alliance.Members.First(x => x.Name == player.Name).Role})");
-                }
-                else
-                {
-                    embed.AddField("Alliance", "N/A");
-                }
-            }
-            else
+            catch (HttpRequestException)
             {
                 embed.Error($"Player **{playerName}** was not found.");
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 return;
             }
 
+            PlayerWithEconomy? playerWithBal = null;
+            try
+            {
+                //! Fetch and Add the balance
+                playerWithBal = await MidnightAPI.GetBalance(player.Id, "MONEY");
+
+                embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                embed.AddField("Balance", "$" + $"{BotUtils.FormatNumber(playerWithBal.Balance)} (#{playerWithBal.Position + 1})");
+
+                //! Fetch and Add the AP
+                playerWithBal = await MidnightAPI.GetBalance(player.Id, "AP");
+
+                embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))) + $" (#{playerWithBal.Position + 1})");
+            }
+            catch (HttpRequestException)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                return;
+            }
+
+            //! Fetch and Add the realm points
+            List<string> pointTypes = new() { "DWARF", "FISHING", "FAIRY" };
+            foreach (string pointType in pointTypes)
+            {
+                try
+                {
+                    playerWithBal = await MidnightAPI.GetBalance(player.Id, pointType + "_POINTS");
+
+                    if (playerWithBal != null)
+                    {
+                        embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))) + $" (#{playerWithBal.Position + 1})");
+                    }
+                    else
+                    {
+                        embed.UnknownError();
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                        return;
+                    }
+                }
+                catch (HttpRequestException)
+                {
+                    embed.AddField(pointType[..1].ToUpper() + pointType[1..].ToLower() + " Realm", "N/A");
+                }
+            }
+
+            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, player.Name);
+
+            if (alliance?.Id != null)
+            {
+                embed.AddField("Alliance", $"{alliance.Name} ({alliance.Members.First(x => x.Name == player.Name).Role})");
+            }
+            else
+            {
+                embed.AddField("Alliance", "N/A");
+            }
+
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
         }
 
-        [SlashCommand("top", "Shows the top 10 players in the specified category")]
+        [SlashCommand("top", "Returns the top 10 players in the specified category")]
         public async Task TopCommand(InteractionContext ctx, [Option("category", "The leaderboard category to display", true)][Autocomplete(typeof(TopAutocompleteProvider))] string category)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
