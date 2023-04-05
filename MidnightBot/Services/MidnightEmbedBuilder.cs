@@ -57,6 +57,12 @@ namespace MidnightBot.Services
             return this;
         }
 
+        public MidnightEmbedBuilder WithColor(DiscordColor color)
+        {
+            _builder.WithColor(color);
+            return this;
+        }
+
         public DiscordEmbed Build()
         { 
             return _builder.Build();
