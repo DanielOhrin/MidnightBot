@@ -4,6 +4,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
+using MidnightBot.Data.API;
+using MidnightBot.Data.Models;
 using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
@@ -52,6 +54,47 @@ namespace MidnightBot.SlashCommands
 
             embed.WithTitle("Daily Reset");
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+        }
+
+        [SlashCommand("koth", "Returns all available information about the KOTH event.")]
+        public async Task KothCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                KingOfTheHill? koth = await MidnightAPI.GetKingOfTheHillAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {koth.IsActive.ToString()[..1].ToUpper() + koth.IsActive.ToString()[1..]}");
+                sb.AppendLine($"**Open »** {koth.IsOpen.ToString()[..1].ToUpper() + koth.IsOpen.ToString()[1..]}");
+                sb.AppendLine();
+
+                if (koth.IsActive)
+                {
+                    //! Show information about the current KoTH
+                    sb.AppendLine($"Player capturing » {koth.CappingName ?? "N/A"}");
+                    sb.AppendLine($"Time until captured » {(koth.CapTime != null ? $"{koth.CapTime?.Minutes}:{koth.CapTime?.Seconds}" : "15:00")}");
+                }
+                else
+                {
+                    //! Show information about the upcoming KoTH
+                    sb.AppendLine($"**Starts in**");
+                    sb.AppendLine($"{koth.TimeToStart.Hours}h {koth.TimeToStart.Minutes}m {koth.TimeToStart.Seconds}s");
+                }
+
+                embed.WithTitle("KOTH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         [SlashCommand("roadmap", "Returns a list of upcoming features.")]

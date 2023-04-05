@@ -55,7 +55,7 @@ namespace MidnightBot.Services
 
         public DiscordEmbedBuilder UnknownError()
         {
-            return _builder.ClearFields().WithImageUrl("").WithTitle("**AN ERROR OCCURED**").WithDescription("**An unknown error occured. Please contact a developer.");
+            return _builder.ClearFields().WithImageUrl("").WithTitle("**AN ERROR OCCURED**").WithDescription("**An unknown error occured. Please contact a developer.**").WithColor(DiscordColor.DarkRed);
         }
     }
 }

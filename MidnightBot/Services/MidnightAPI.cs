@@ -25,7 +25,7 @@ namespace MidnightBot.Data.API
         private static readonly string _url = "https://api.midnightsky.net";
         private static readonly string _apiKey = new ConfigurationBuilder().AddUserSecrets("bbb4920a-bccf-46bb-bdb0-0611680075ba").Build()["apiKey"];
 
-        public static async Task<Player?> GetPlayer(string playerName)
+        public static async Task<Player?> GetPlayerAsync(string playerName)
         {
             using (var client = new MidnightClient().Client)
             {
@@ -35,7 +35,7 @@ namespace MidnightBot.Data.API
             }
         }
 
-        public static async Task<PlayerWithEconomy?> GetBalance(string playerId, string economyType)
+        public static async Task<PlayerWithEconomy?> GetBalanceAsync(string playerId, string economyType)
         {
             using (var client = new MidnightClient().Client)
             {
@@ -45,7 +45,7 @@ namespace MidnightBot.Data.API
             }
         }
 
-        public static async Task<TopTenPlayerWithEconomy?> GetTop(string economyType)
+        public static async Task<TopTenPlayerWithEconomy?> GetTopAsync(string economyType)
         {
             using (var client = new MidnightClient().Client)
             {
@@ -55,7 +55,7 @@ namespace MidnightBot.Data.API
             }
         }
 
-        public static async Task<Alliance?> GetAlliance(GetAllianceSearchTypeEnum searchType, string searchValue)
+        public static async Task<Alliance?> GetAllianceAsync(GetAllianceSearchTypeEnum searchType, string searchValue)
         {
             using (var client = new MidnightClient().Client)
             {
@@ -65,7 +65,7 @@ namespace MidnightBot.Data.API
             }
         }
 
-        public static async Task<Island?> GetIsland(string islandId)
+        public static async Task<Island?> GetIslandAsync(string islandId)
         {
             using (var client = new MidnightClient().Client)
             {
@@ -75,13 +75,23 @@ namespace MidnightBot.Data.API
             }
         }
         
-        public static async Task<TopIslands?> GetTopIslands(long amount)
+        public static async Task<TopIslands?> GetTopIslandsAsync(long amount)
         {
             using (var client = new MidnightClient().Client)
             {
                 await using Stream stream = await client.GetStreamAsync($"{_url}/hourlyxp/top?top={amount}&key={_apiKey}");
 
                 return await JsonSerializer.DeserializeAsync<TopIslands>(stream);
+            }
+        }
+
+        public static async Task<KingOfTheHill?> GetKingOfTheHillAsync()
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/koth?key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<KingOfTheHill>(stream);
             }
         }
     }

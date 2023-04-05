@@ -23,11 +23,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
+            Alliance? alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
+                alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -70,7 +70,7 @@ namespace MidnightBot.SlashCommands
                 {
                     foreach (KeyValuePair<string, string> enemy in alliance.Relations)
                     {
-                        enemies.Add((await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceId, enemy.Key))?.Name);
+                        enemies.Add((await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.AllianceId, enemy.Key))?.Name);
                     }
 
                     if (enemies.Contains(null))
@@ -111,11 +111,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
+            Alliance? alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
+                alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -131,7 +131,7 @@ namespace MidnightBot.SlashCommands
 
             foreach (PlayerWithAlliance player in alliance.Members)
             {
-                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalance(player.Id, "MONEY");
+                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalanceAsync(player.Id, "MONEY");
                 if (newPlayer.Position != (-1))
                 {
                     players.Add(newPlayer);
@@ -177,11 +177,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
+            Alliance? alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
+                alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -197,7 +197,7 @@ namespace MidnightBot.SlashCommands
 
             foreach (PlayerWithAlliance player in alliance.Members)
             {
-                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalance(player.Id, "AP");
+                PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalanceAsync(player.Id, "AP");
                 if (newPlayer.Position != (-1))
                 {
                     players.Add(newPlayer);
@@ -248,11 +248,11 @@ namespace MidnightBot.SlashCommands
 
             MidnightEmbedBuilder embed = new();
 
-            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, searchValue);
+            Alliance? alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.PlayerName, searchValue);
 
             if (alliance?.Id == null)
             {
-                alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.AllianceName, searchValue);
+                alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.AllianceName, searchValue);
             }
 
             if (alliance?.Id == null)
@@ -270,7 +270,7 @@ namespace MidnightBot.SlashCommands
             {
                 try
                 {
-                    PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalance(player.Id, realmType);
+                    PlayerWithEconomy? newPlayer = await MidnightAPI.GetBalanceAsync(player.Id, realmType);
                     if (newPlayer.Position != (-1))
                     {
                         players.Add(newPlayer);
