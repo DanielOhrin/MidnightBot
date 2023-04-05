@@ -104,5 +104,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<BlackAuctionHouse>(stream);
             }
         }
+
+        public static async Task<LastManStanding?> GetLastManStandingAsync()
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/lms?key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<LastManStanding>(stream);
+            }
+        }
     }
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace MidnightBot.Data.Models
-{
-    internal class LastManStanding
-    {
-    }
+{//TODO Add the remaining properties once we can sit in LMS to see example data.
+    public record LastManStanding([property: JsonPropertyName("running")] bool IsActive);
 }

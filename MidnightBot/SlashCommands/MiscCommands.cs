@@ -147,6 +147,35 @@ namespace MidnightBot.SlashCommands
                 Console.WriteLine(ex.ToString());
             }
         }
+        
+        [SlashCommand("lms", "Returns all available information about LMS.")]
+        public async Task BahCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                LastManStanding? lms = await MidnightAPI.GetLastManStandingAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {lms.IsActive.ToString()[..1].ToUpper() + lms.IsActive.ToString()[1..]}");
+                sb.AppendLine();
+
+                sb.AppendLine("*LMS has not been opened to players on the server yet.*");
+
+                embed.WithTitle("BAH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
         [SlashCommand("roadmap", "Returns a list of upcoming features.")]
         public async Task RoadmapCommand(InteractionContext ctx)
