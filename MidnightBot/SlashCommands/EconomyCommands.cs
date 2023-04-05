@@ -40,7 +40,7 @@ namespace MidnightBot.SlashCommands
 
                 if (playerWithBal != null)
                 {
-                    embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                    embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                     embed.AddField("Balance", "$" + BotUtils.FormatNumber(playerWithBal.Balance));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position + 1}");
                 }
@@ -81,7 +81,7 @@ namespace MidnightBot.SlashCommands
 
                 if (playerWithBal != null)
                 {
-                    embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                    embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                     embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position + 1}");
                 }
@@ -118,7 +118,7 @@ namespace MidnightBot.SlashCommands
 
             if (player != null)
             {
-                embed.WithTitle(player.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                embed.WithPlayerHead(playerName).WithTitle(player.Name);
 
                 List<string> pointTypes = new() { "DWARF", "FISHING", "FAIRY" };
                 foreach (string pointType in pointTypes)
@@ -176,7 +176,7 @@ namespace MidnightBot.SlashCommands
                 //! Fetch and Add the balance
                 playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "MONEY");
 
-                embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                 embed.AddField("Balance", "$" + $"{BotUtils.FormatNumber(playerWithBal.Balance)} (#{playerWithBal.Position + 1})");
 
                 //! Fetch and Add the AP

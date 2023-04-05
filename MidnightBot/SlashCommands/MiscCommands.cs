@@ -119,13 +119,15 @@ namespace MidnightBot.SlashCommands
                     sb.AppendLine($"**Player bidding** » {bah.BidderName}");
                     sb.AppendLine();
 
-                    sb.AppendLine($"**Current bid »** {BotUtils.FormatNumber(bah.CurrentBid)}");
-                    sb.AppendLine($"**Next bid »** {BotUtils.FormatNumber(bah.NextBid)}");
+                    sb.AppendLine($"**Current bid »** ${BotUtils.FormatNumber(bah.CurrentBid)}");
+                    sb.AppendLine($"**Next bid »** ${BotUtils.FormatNumber(bah.NextBid)}");
                     sb.AppendLine();
 
                     sb.AppendLine("**Ends in**");
                     TimeSpan timeUntilEnd = DateTime.UnixEpoch.AddMilliseconds(bah.EndTime) - DateTime.Now;
                     sb.AppendLine($"{timeUntilEnd.Minutes}m {timeUntilEnd.Seconds}s");
+    
+                    embed.WithPlayerHead(bah.BidderName);
                 }
                 else
                 {
