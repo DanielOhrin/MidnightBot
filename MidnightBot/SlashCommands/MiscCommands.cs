@@ -4,6 +4,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
+using MidnightBot.Data.API;
+using MidnightBot.Data.Models;
 using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
@@ -52,6 +54,169 @@ namespace MidnightBot.SlashCommands
 
             embed.WithTitle("Daily Reset");
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+        }
+
+        [SlashCommand("koth", "Returns all available information about the KOTH event.")]
+        public async Task KothCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                KingOfTheHill? koth = await MidnightAPI.GetKingOfTheHillAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {koth.IsActive.ToString()[..1].ToUpper() + koth.IsActive.ToString()[1..]}");
+                sb.AppendLine($"**Open »** {koth.IsOpen.ToString()[..1].ToUpper() + koth.IsOpen.ToString()[1..]}");
+                sb.AppendLine();
+
+                if (koth.IsActive)
+                {
+                    //! Show information about the current KoTH
+                    sb.AppendLine($"**Player capturing »** {koth.CappingName ?? "N/A"}");
+                    sb.AppendLine($"**Time until captured »** {(koth.CapTime != null ? $"{koth.CapTime?.Minutes}:{koth.CapTime?.Seconds}" : "15:00")}");
+                    
+                    if (koth.CappingName != null)
+                    {
+                        embed.WithPlayerHead(koth.CappingName);
+                    }
+                }
+                else
+                {
+                    //! Show information about the upcoming KoTH
+                    sb.AppendLine($"**Starts in**");
+                    sb.AppendLine($"{koth.TimeToStart.Hours}h {koth.TimeToStart.Minutes}m {koth.TimeToStart.Seconds}s");
+                }
+
+                embed.WithTitle("KOTH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }        
+        
+        [SlashCommand("bah", "Returns all available information about the BAH.")]
+        public async Task BahCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                BlackAuctionHouse? bah = await MidnightAPI.GetBlackAuctionHouseAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {(bah.StartTime == 0 ? "True" : "False")}");
+                sb.AppendLine();
+              
+                if (bah.StartTime == 0)
+                {
+                    //! Show information about the current BAH auction
+                    sb.AppendLine($"**Player bidding** » {bah.BidderName}");
+                    sb.AppendLine();
+
+                    sb.AppendLine($"**Current bid »** ${BotUtils.FormatNumber(bah.CurrentBid)}");
+                    sb.AppendLine($"**Next bid »** ${BotUtils.FormatNumber(bah.NextBid)}");
+                    sb.AppendLine();
+
+                    sb.AppendLine("**Ends in**");
+                    TimeSpan timeUntilEnd = DateTime.UnixEpoch.AddMilliseconds(bah.EndTime) - DateTime.Now;
+                    sb.AppendLine($"{timeUntilEnd.Minutes}m {timeUntilEnd.Seconds}s");
+    
+                    embed.WithPlayerHead(bah.BidderName);
+                }
+                else
+                {
+                    //! Show information about the upcoming BAH auction
+                    sb.AppendLine($"**Starts in**");
+                    TimeSpan timeUntilStart = DateTime.UnixEpoch.AddMilliseconds(bah.StartTime) - DateTime.Now;
+                    sb.AppendLine($"{timeUntilStart.Minutes}m {timeUntilStart.Seconds}s");
+                }
+
+                embed.WithTitle("BAH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        
+        [SlashCommand("lms", "Returns all available information about LMS.")]
+        public async Task LmsCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                LastManStanding? lms = await MidnightAPI.GetLastManStandingAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {lms.IsActive.ToString()[..1].ToUpper() + lms.IsActive.ToString()[1..]}");
+                sb.AppendLine();
+
+                sb.AppendLine("*LMS has not been opened to players on the server yet.*");
+
+                embed.WithTitle("BAH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        [SlashCommand("server", "Returns all available information about the server.")]
+        public async Task ServerCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                Server? server = await MidnightAPI.GetServerAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine("**IPs**");
+                sb.AppendLine("midnightsky.xyz");
+                sb.AppendLine("midnightsky.net");
+                sb.AppendLine("play.midnightsky.net");
+                sb.AppendLine();
+
+                sb.AppendLine($"**Servers online »** {server.ServerCount}");
+                sb.AppendLine($"**Proxies online »** {server.ProxyCount}");
+                sb.AppendLine();
+
+                sb.AppendLine($"**Players online »** {server?.PlayerCount.ToString() ?? "Unknown"}");
+
+                //! Clear the footer since we are displaying that information already
+                embed.WithTitle("Server Info").WithDescription(sb.ToString()).WithFooter("Discord: discord.gg/midnightsky");
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch (Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         [SlashCommand("roadmap", "Returns a list of upcoming features.")]

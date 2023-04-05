@@ -21,7 +21,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                player = await MidnightAPI.GetPlayer(playerName);
+                player = await MidnightAPI.GetPlayerAsync(playerName);
             }
             catch (Exception ex)
             {
@@ -33,7 +33,7 @@ namespace MidnightBot.SlashCommands
             if (player != null)
             {
 
-                Island? island = await MidnightAPI.GetIsland(player.Id);
+                Island? island = await MidnightAPI.GetIslandAsync(player.Id);
 
                 if (island != null)
                 {
@@ -59,11 +59,11 @@ namespace MidnightBot.SlashCommands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            List<Island>? islands = (await MidnightAPI.GetTopIslands(amount))?.Islands;
+            List<Island>? islands = (await MidnightAPI.GetTopIslandsAsync(amount))?.Islands;
 
             MidnightEmbedBuilder embed = new();
 
-            if (islands != null && islands.Count == amount)
+            if (islands != null)
             {
                 embed.WithTitle($"Top {amount} Hourly Island Xp");
                 
@@ -80,6 +80,18 @@ namespace MidnightBot.SlashCommands
 
                         sb.AppendLine($"**{i + 1}. {island.Name} »** {BotUtils.FormatNumber(island.Amount.ToString())}");
                     }
+                    if (islands.Count != amount && islands.Count != 0)
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine("*All islands that have gained xp this hour have been displayed.*");
+                    }
+                    if (islands.Count == 0)
+                    {
+                        sb.AppendLine("There are no islands that have gained xp this hour.");
+                        sb.AppendLine();
+                        sb.AppendLine("This may be due to a restart or downtime.");
+                    }
+
                     embed.WithDescription(sb.ToString());
                 }
                 catch (Exception)

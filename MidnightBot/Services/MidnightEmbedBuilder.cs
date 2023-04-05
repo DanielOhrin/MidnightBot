@@ -1,5 +1,8 @@
 ﻿using DSharpPlus.Entities;
 
+using MidnightBot.Data.API;
+using MidnightBot.Data.Models;
+
 namespace MidnightBot.Services
 {
     //! This class represents the wrapper for every Embed this bot sends.
@@ -9,53 +12,66 @@ namespace MidnightBot.Services
         private readonly DiscordColor _defaultColor = DiscordColor.Purple;
         public MidnightEmbedBuilder()
         {
-            _builder = new DiscordEmbedBuilder().WithColor(_defaultColor).WithFooter("Server: midnightsky.net");
+            int? playerCount = Task.Run(MidnightAPI.GetServerAsync).Result?.PlayerCount;
+            _builder = new DiscordEmbedBuilder().WithColor(_defaultColor).WithFooter($"Server: midnightsky.net \n{$"Players: {Task.Run(MidnightAPI.GetServerAsync).Result?.PlayerCount}" ?? "Unknown"}");
         }
 
-        public DiscordEmbedBuilder WithImageUrl(string url)
+        public MidnightEmbedBuilder WithImageUrl(string url)
         {
-            return _builder.WithImageUrl(url);
+            _builder.WithImageUrl(url);
+            return this;
         }
 
-        public DiscordEmbedBuilder AddField(string name, string value, bool inline = false)
+        public MidnightEmbedBuilder AddField(string name, string value, bool inline = false)
         {
-            return _builder.AddField(name, value, inline);
+            _builder.AddField(name, value, inline);
+            return this;
         }
 
-        public DiscordEmbedBuilder ClearFields()
+        public MidnightEmbedBuilder ClearFields()
         {
-            return _builder.ClearFields();
+            _builder.ClearFields();
+            return this;
         }
-        public DiscordEmbedBuilder WithFooter(string? text = null, string? iconUrl = null)
+        public MidnightEmbedBuilder WithFooter(string? text = null, string? iconUrl = null)
         {
-            return _builder.WithFooter(text, iconUrl);
-        }
-
-        public DiscordEmbedBuilder WithTitle(string title)
-        {
-            return _builder.WithTitle(title);
+            _builder.WithFooter(text, iconUrl);
+            return this;
         }
 
-        public DiscordEmbedBuilder WithDescription(string description)
+        public MidnightEmbedBuilder WithTitle(string title)
         {
-            return _builder.WithDescription(description);
+            _builder.WithTitle(title);
+            return this;
+        }
+
+        public MidnightEmbedBuilder WithDescription(string description)
+        {
+            _builder.WithDescription(description);
+            return this;
+        }
+
+        public MidnightEmbedBuilder WithPlayerHead(string playerName)
+        {
+            _builder.WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+            return this;
         }
 
         public DiscordEmbed Build()
-        {
-            DiscordEmbedBuilder builder = _builder;
-
-            return builder.Build();
+        { 
+            return _builder.Build();
         }
 
-        public DiscordEmbedBuilder Error(string errorMessage)
+        public MidnightEmbedBuilder Error(string errorMessage)
         {
-            return _builder.ClearFields().WithImageUrl("").WithTitle("**Error**").WithDescription(errorMessage).WithColor(DiscordColor.DarkRed);
+            _builder.ClearFields().WithImageUrl("").WithTitle("**Error**").WithDescription(errorMessage).WithColor(DiscordColor.DarkRed);
+            return this;
         }
 
-        public DiscordEmbedBuilder UnknownError()
+        public MidnightEmbedBuilder UnknownError()
         {
-            return _builder.ClearFields().WithImageUrl("").WithTitle("**AN ERROR OCCURED**").WithDescription("**An unknown error occured. Please contact a developer.");
+            _builder.ClearFields().WithImageUrl("").WithTitle("**AN ERROR OCCURED**").WithDescription("**An unknown error occured. Please contact a developer.**").WithColor(DiscordColor.DarkRed);
+            return this;
         }
     }
 }

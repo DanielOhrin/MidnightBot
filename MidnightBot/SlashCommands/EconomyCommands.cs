@@ -25,7 +25,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                player = await MidnightAPI.GetPlayer(playerName);
+                player = await MidnightAPI.GetPlayerAsync(playerName);
             }
             catch (Exception ex)
             {
@@ -36,11 +36,11 @@ namespace MidnightBot.SlashCommands
 
             if (player != null)
             {
-                PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalance(player.Id, "MONEY");
+                PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "MONEY");
 
                 if (playerWithBal != null)
                 {
-                    embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                    embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                     embed.AddField("Balance", "$" + BotUtils.FormatNumber(playerWithBal.Balance));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position + 1}");
                 }
@@ -66,7 +66,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                player = await MidnightAPI.GetPlayer(playerName);
+                player = await MidnightAPI.GetPlayerAsync(playerName);
             }
             catch (Exception ex)
             {
@@ -77,11 +77,11 @@ namespace MidnightBot.SlashCommands
 
             if (player != null)
             {
-                PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalance(player.Id, "AP");
+                PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "AP");
 
                 if (playerWithBal != null)
                 {
-                    embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                    embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                     embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))));
                     embed.AddField("Leaderboard Position", $"#{playerWithBal.Position + 1}");
                 }
@@ -107,7 +107,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                player = await MidnightAPI.GetPlayer(playerName);
+                player = await MidnightAPI.GetPlayerAsync(playerName);
             }
             catch (Exception ex)
             {
@@ -118,14 +118,14 @@ namespace MidnightBot.SlashCommands
 
             if (player != null)
             {
-                embed.WithTitle(player.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                embed.WithPlayerHead(playerName).WithTitle(player.Name);
 
                 List<string> pointTypes = new() { "DWARF", "FISHING", "FAIRY" };
                 foreach (string pointType in pointTypes)
                 {
                     try
                     {
-                        PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalance(player.Id, pointType + "_POINTS");
+                        PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, pointType + "_POINTS");
 
                         if (playerWithBal != null)
                         {
@@ -161,7 +161,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                player = await MidnightAPI.GetPlayer(playerName);
+                player = await MidnightAPI.GetPlayerAsync(playerName);
             }
             catch (HttpRequestException)
             {
@@ -174,13 +174,13 @@ namespace MidnightBot.SlashCommands
             try
             {
                 //! Fetch and Add the balance
-                playerWithBal = await MidnightAPI.GetBalance(player.Id, "MONEY");
+                playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "MONEY");
 
-                embed.WithTitle(playerWithBal.Name).WithImageUrl($"https://minotar.net/helm/{playerName}/200.png");
+                embed.WithPlayerHead(playerName).WithTitle(playerWithBal.Name);
                 embed.AddField("Balance", "$" + $"{BotUtils.FormatNumber(playerWithBal.Balance)} (#{playerWithBal.Position + 1})");
 
                 //! Fetch and Add the AP
-                playerWithBal = await MidnightAPI.GetBalance(player.Id, "AP");
+                playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "AP");
 
                 embed.AddField("AP", BotUtils.FormatNumber(playerWithBal.Balance.Substring(0, playerWithBal.Balance.IndexOf("."))) + $" (#{playerWithBal.Position + 1})");
             }
@@ -197,7 +197,7 @@ namespace MidnightBot.SlashCommands
             {
                 try
                 {
-                    playerWithBal = await MidnightAPI.GetBalance(player.Id, pointType + "_POINTS");
+                    playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, pointType + "_POINTS");
 
                     if (playerWithBal != null)
                     {
@@ -216,7 +216,7 @@ namespace MidnightBot.SlashCommands
                 }
             }
 
-            Alliance? alliance = await MidnightAPI.GetAlliance(GetAllianceSearchTypeEnum.PlayerName, player.Name);
+            Alliance? alliance = await MidnightAPI.GetAllianceAsync(GetAllianceSearchTypeEnum.PlayerName, player.Name);
 
             if (alliance?.Id != null)
             {
@@ -264,7 +264,7 @@ namespace MidnightBot.SlashCommands
 
             try
             {
-                players = (await MidnightAPI.GetTop(category))?.Players;
+                players = (await MidnightAPI.GetTopAsync(category))?.Players;
             }
             catch (Exception ex)
             {
