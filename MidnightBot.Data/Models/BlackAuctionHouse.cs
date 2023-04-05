@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace MidnightBot.Data.Models
 {
-    internal class BlackAuctionHouse
-    {
-    }
+    public record BlackAuctionHouse([property: JsonPropertyName("start_time")] long StartTime, [property: JsonPropertyName("end_time")] long EndTime, [property: JsonPropertyName("current_bid")] string CurrentBid, [property: JsonPropertyName("next_bid")] string NextBid, [property: JsonPropertyName("current_bidder")] string BidderId, [property: JsonPropertyName("current_bidder_name")] string BidderName);
 }

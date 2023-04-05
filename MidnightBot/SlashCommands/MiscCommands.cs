@@ -76,8 +76,8 @@ namespace MidnightBot.SlashCommands
                 if (koth.IsActive)
                 {
                     //! Show information about the current KoTH
-                    sb.AppendLine($"Player capturing » {koth.CappingName ?? "N/A"}");
-                    sb.AppendLine($"Time until captured » {(koth.CapTime != null ? $"{koth.CapTime?.Minutes}:{koth.CapTime?.Seconds}" : "15:00")}");
+                    sb.AppendLine($"**Player capturing »** {koth.CappingName ?? "N/A"}");
+                    sb.AppendLine($"**Time until captured »** {(koth.CapTime != null ? $"{koth.CapTime?.Minutes}:{koth.CapTime?.Seconds}" : "15:00")}");
                 }
                 else
                 {
@@ -87,6 +87,55 @@ namespace MidnightBot.SlashCommands
                 }
 
                 embed.WithTitle("KOTH").WithDescription(sb.ToString());
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        
+        [SlashCommand("bah", "Returns all available information about the BAH.")]
+        public async Task BahCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                BlackAuctionHouse? bah = await MidnightAPI.GetBlackAuctionHouseAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine($"**Active »** {(bah.StartTime == 0 ? "True" : "False")}");
+                sb.AppendLine();
+              
+                if (bah.StartTime == 0)
+                {
+                    //! Show information about the current BAH auction
+                    sb.AppendLine($"**Player bidding** » {bah.BidderName}");
+                    sb.AppendLine();
+
+                    sb.AppendLine($"**Current bid »** {BotUtils.FormatNumber(bah.CurrentBid)}");
+                    sb.AppendLine($"**Next bid »** {BotUtils.FormatNumber(bah.NextBid)}");
+                    sb.AppendLine();
+
+                    sb.AppendLine("**Ends in**");
+                    TimeSpan timeUntilEnd = DateTime.UnixEpoch.AddMilliseconds(bah.EndTime) - DateTime.Now;
+                    sb.AppendLine($"{timeUntilEnd.Minutes}m {timeUntilEnd.Seconds}s");
+                }
+                else
+                {
+                    //! Show information about the upcoming BAH auction
+                    sb.AppendLine($"**Starts in**");
+                    TimeSpan timeUntilStart = DateTime.UnixEpoch.AddMilliseconds(bah.StartTime) - DateTime.Now;
+                    sb.AppendLine($"{timeUntilStart.Minutes}m {timeUntilStart.Seconds}s");
+                }
+
+                embed.WithTitle("BAH").WithDescription(sb.ToString());
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
             }
             catch(Exception ex)

@@ -94,5 +94,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<KingOfTheHill>(stream);
             }
         }
+
+        public static async Task<BlackAuctionHouse?> GetBlackAuctionHouseAsync()
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/bah?key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<BlackAuctionHouse>(stream);
+            }
+        }
     }
 }
