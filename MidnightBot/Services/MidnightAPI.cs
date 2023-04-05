@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using MidnightBot.Enums;
 using MidnightBot.Data.Models;
 using EnumOps;
+using MidnightBot.Data.MidnightAPI.Models;
 
 namespace MidnightBot.Data.API
 {
@@ -24,6 +25,16 @@ namespace MidnightBot.Data.API
     {
         private static readonly string _url = "https://api.midnightsky.net";
         private static readonly string _apiKey = new ConfigurationBuilder().AddUserSecrets("bbb4920a-bccf-46bb-bdb0-0611680075ba").Build()["apiKey"];
+
+        public static async Task<Key?> GetKeyAsync(string apiKey)
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/key?key={apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<Key>(stream);
+            }
+        }
 
         public static async Task<Player?> GetPlayerAsync(string playerName)
         {

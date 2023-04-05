@@ -21,7 +21,9 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\MidnightBot.Data\MidnightBot.Data.csproj" />
+		<ProjectReference Include="..\MidnightBot.Data.MidnightAPI\MidnightBot.Data.MidnightAPI.csproj" />
+	</ItemGroup><ItemGroup>
+		<ProjectReference Include="..\MidnightBot.Data.BotAPI\MidnightBot.Data.BotAPI.csproj" />
 	</ItemGroup>
 	
 </Project>
