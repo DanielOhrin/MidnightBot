@@ -21,6 +21,7 @@ namespace MidnightBot.SlashCommands
             //! Create a "thinking..." response
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
+            MidnightEmbedBuilder embed = new();
             Player? player = null;
 
             try
@@ -32,9 +33,8 @@ namespace MidnightBot.SlashCommands
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             }
 
-            MidnightEmbedBuilder embed = new();
 
-            if (player != null)
+            if (player?.Id != null)
             {
                 PlayerWithEconomy? playerWithBal = await MidnightAPI.GetBalanceAsync(player.Id, "MONEY");
 
