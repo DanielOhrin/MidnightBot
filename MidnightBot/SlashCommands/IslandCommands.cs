@@ -80,10 +80,16 @@ namespace MidnightBot.SlashCommands
 
                         sb.AppendLine($"**{i + 1}. {island.Name} »** {BotUtils.FormatNumber(island.Amount.ToString())}");
                     }
-                    if (islands.Count != amount)
+                    if (islands.Count != amount && islands.Count != 0)
                     {
                         sb.AppendLine();
                         sb.AppendLine("*All islands that have gained xp this hour have been displayed.*");
+                    }
+                    if (islands.Count == 0)
+                    {
+                        sb.AppendLine("There are no islands that have gained xp this hour.");
+                        sb.AppendLine();
+                        sb.AppendLine("This may be due to a restart or downtime.");
                     }
 
                     embed.WithDescription(sb.ToString());
