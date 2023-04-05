@@ -1,5 +1,8 @@
 ﻿using DSharpPlus.Entities;
 
+using MidnightBot.Data.API;
+using MidnightBot.Data.Models;
+
 namespace MidnightBot.Services
 {
     //! This class represents the wrapper for every Embed this bot sends.
@@ -9,7 +12,8 @@ namespace MidnightBot.Services
         private readonly DiscordColor _defaultColor = DiscordColor.Purple;
         public MidnightEmbedBuilder()
         {
-            _builder = new DiscordEmbedBuilder().WithColor(_defaultColor).WithFooter("Server: midnightsky.net");
+            int? playerCount = Task.Run(MidnightAPI.GetServerAsync).Result?.PlayerCount;
+            _builder = new DiscordEmbedBuilder().WithColor(_defaultColor).WithFooter($"Server: midnightsky.net \n{$"Players: {Task.Run(MidnightAPI.GetServerAsync).Result?.PlayerCount}" ?? "Unknown"}");
         }
 
         public MidnightEmbedBuilder WithImageUrl(string url)

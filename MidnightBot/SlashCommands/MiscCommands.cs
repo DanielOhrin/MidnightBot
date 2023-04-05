@@ -78,6 +78,11 @@ namespace MidnightBot.SlashCommands
                     //! Show information about the current KoTH
                     sb.AppendLine($"**Player capturing »** {koth.CappingName ?? "N/A"}");
                     sb.AppendLine($"**Time until captured »** {(koth.CapTime != null ? $"{koth.CapTime?.Minutes}:{koth.CapTime?.Seconds}" : "15:00")}");
+                    
+                    if (koth.CappingName != null)
+                    {
+                        embed.WithPlayerHead(koth.CappingName);
+                    }
                 }
                 else
                 {
@@ -95,7 +100,7 @@ namespace MidnightBot.SlashCommands
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
                 Console.WriteLine(ex.ToString());
             }
-        }
+        }        
         
         [SlashCommand("bah", "Returns all available information about the BAH.")]
         public async Task BahCommand(InteractionContext ctx)
@@ -149,7 +154,7 @@ namespace MidnightBot.SlashCommands
         }
         
         [SlashCommand("lms", "Returns all available information about LMS.")]
-        public async Task BahCommand(InteractionContext ctx)
+        public async Task LmsCommand(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
@@ -170,6 +175,43 @@ namespace MidnightBot.SlashCommands
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
             }
             catch(Exception ex)
+            {
+                embed.UnknownError();
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        [SlashCommand("server", "Returns all available information about the server.")]
+        public async Task ServerCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+            try
+            {
+
+                Server? server = await MidnightAPI.GetServerAsync();
+
+                StringBuilder sb = new();
+
+                sb.AppendLine("**IPs**");
+                sb.AppendLine("midnightsky.xyz");
+                sb.AppendLine("midnightsky.net");
+                sb.AppendLine("play.midnightsky.net");
+                sb.AppendLine();
+
+                sb.AppendLine($"**Servers online »** {server.ServerCount}");
+                sb.AppendLine($"**Proxies online »** {server.ProxyCount}");
+                sb.AppendLine();
+
+                sb.AppendLine($"**Players online »** {server?.PlayerCount.ToString() ?? "Unknown"}");
+
+                //! Clear the footer since we are displaying that information already
+                embed.WithTitle("Server Info").WithDescription(sb.ToString()).WithFooter("Discord: discord.gg/midnightsky");
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+            }
+            catch (Exception ex)
             {
                 embed.UnknownError();
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));

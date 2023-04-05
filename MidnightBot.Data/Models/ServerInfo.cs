@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace MidnightBot.Data.Models
 {
-    internal class ServerInfo
-    {
-    }
+    public record Server([property: JsonPropertyName("servers")] int ServerCount, [property: JsonPropertyName("proxies")] int ProxyCount, [property: JsonPropertyName("players")] int PlayerCount);
 }

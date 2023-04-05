@@ -114,5 +114,15 @@ namespace MidnightBot.Data.API
                 return await JsonSerializer.DeserializeAsync<LastManStanding>(stream);
             }
         }
+
+        public static async Task<Server?> GetServerAsync()
+        {
+            using (var client = new MidnightClient().Client)
+            {
+                await using Stream stream = await client.GetStreamAsync($"{_url}/status?key={_apiKey}");
+
+                return await JsonSerializer.DeserializeAsync<Server>(stream);
+            }
+        }
     }
 }
