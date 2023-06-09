@@ -5,6 +5,7 @@ using DSharpPlus.SlashCommands;
 using MidnightBot.Data.API;
 using MidnightBot.Data.BotAPI.Models;
 using MidnightBot.Data.MidnightAPI.Models;
+using MidnightBot.Data.Models;
 using MidnightBot.Services;
 
 namespace MidnightBot.SlashCommands
@@ -78,6 +79,35 @@ namespace MidnightBot.SlashCommands
             }
         }
 
+        [SlashCommand("key", "Returns info about your api key in a private message.")]
+        public async Task APIKeyCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            MidnightEmbedBuilder embed = new();
+
+            var db = new MidnightSkyBotContext();
+
+            UserProfile? profile = db.UserProfiles.FirstOrDefault(x => x.Id == (long)ctx.User.Id);
+
+            if (profile == null || profile.ApiKey == null)
+            {
+                embed.Error("No API key on file.");
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()));
+                return;
+            }
+
+            try
+            {
+
+            }
+            catch (HttpRequestException)
+            {
+                embed.Error("API key invalid. Please remove.");
+            }
+
+
+        }
 
     }
 }
